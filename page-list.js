@@ -6,6 +6,8 @@ function pagelist(elem, opts) {
 	opts.itemsOnPage = opts.itemsOnPage || 1;
 	opts.currentPage =  opts.currentPage || 1;
 	opts.displayedPages = opts.displayedPages || 3;
+	opts.className = opts.className || "page-list";
+	opts.rangeText = opts.rangeText || "...";
 	opts.prevText = opts.prevText || "<";
 	opts.nextText = opts.nextText || ">";
 
@@ -54,7 +56,7 @@ function pagelist(elem, opts) {
 			//add prev button and first page (if is necesary)
 			_append(ul, pages, opts.currentPage - 1, opts.prevText);
 			(start > 0) && _append(ul, pages, 1);
-			(start > 1) && _append(ul, pages, opts.currentPage - range, "...");
+			(start > 1) && _append(ul, pages, opts.currentPage - range, opts.rangeText);
 
 			//iterate over displayed pages
 			var i = start * opts.itemsOnPage;
@@ -64,11 +66,11 @@ function pagelist(elem, opts) {
 			}
 
 			//add next button and last page (if is necesary)
-			(end < (pages - 1)) && _append(ul, pages, opts.currentPage + range, "...");
+			(end < (pages - 1)) && _append(ul, pages, opts.currentPage + range, opts.rangeText);
 			(end < pages) && _append(ul, pages, pages);
 			_append(ul, pages, opts.currentPage + 1, opts.nextText);
 
-			ul.setAttribute("class", "page-list");
+			ul.setAttribute("class", opts.className);
 			$("li[name='" + opts.currentPage + "']", ul).html(opts.currentPage);
 			return this;
 		}

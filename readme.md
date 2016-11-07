@@ -1,6 +1,6 @@
-# dom-pdf
+# page-list
 
-Very simply and minified Javascript closure to implement pagination list.
+Very simply and minified JavaScript closure to implement pagination list.
 
 ## Usage
 

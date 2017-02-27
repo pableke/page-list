@@ -1,6 +1,6 @@
 
 (function($) {
-	var self, pages;
+	var self;
 	var settings = {
 		items: 0,
 		itemsOnPage: 1,
@@ -13,15 +13,15 @@
 	};
 
 	function range(val, min, max) { return Math.min(Math.max(val, min), max); };
-	function rangePages(val) { return range(val, 1, pages); };
-	function setPages() { pages = actions.numPages(); return actions; };
 	function draw(elem, page) {
 		//inicialize page and sub-treee DOM
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		var ul = elem.appendChild(document.createElement("ul"));
 
 		//calc the iterator index and range limits
-		settings.currentPage = rangePages(page || settings.currentPage); //page 0 not allowed
+		var pages = actions.numPages(); //total number of pages
+		page = page || settings.currentPage; //set default page number
+		settings.currentPage = range(page, 1, pages); //page 0 not allowed
 		var end = range(settings.currentPage + settings.displayedPages, 0, pages); //last page
 		var start = range(settings.currentPage - settings.displayedPages - 1, 0, end);
 		var group = (settings.displayedPages * 2) + 1;
@@ -64,9 +64,9 @@
 		currentPage: function() { return settings.currentPage; },
 		setCurrentPage: function(p) { settings.currentPage = p; return this; },
 		numItems: function() { return settings.items; },
-		setItems: function(i) { settings.items = i; return setPages(); },
+		setItems: function(i) { settings.items = i; return this; },
 		itemsOnPage: function() { return settings.itemsOnPage; },
-		setItemsOnPage: function(l) { settings.itemsOnPage = l; return setPages(); },
+		setItemsOnPage: function(l) { settings.itemsOnPage = l; return this; },
 		firstItemOnPage: function(page) { return page ? ((page - 1) * settings.itemsOnPage) : 0; },
 		getPageFromIndex: function(i) { return i ? Math.ceil(i / settings.itemsOnPage) : 1; },
 		numPages: function() { return Math.ceil(settings.items / settings.itemsOnPage); },
@@ -77,7 +77,7 @@
 	$.fn.pagelist = function(opts, value) {
 		self = this; //global reference to the jquery list
 		opts && $.extend(settings, opts); //inicialize settings
-		return setPages(); //calc the total page number
+		return actions; //return actions page-list object
 	};
 
 }(jQuery));

@@ -1,7 +1,7 @@
 
 (function($) {
-	var self;
-	var settings = {
+	var self; //all page-lists reference
+	var settings = { //global config
 		items: 0,
 		itemsOnPage: 1,
 		currentPage: 1,
@@ -71,6 +71,7 @@
 		getPageFromIndex: function(i) { return i ? Math.ceil(i / settings.itemsOnPage) : 1; },
 		numPages: function() { return Math.ceil(settings.items / settings.itemsOnPage); },
 		draw: function(page) { self.each(function() { draw(this, page); }); return this; },
+		click: function(page) { clickOn(page); return this; },
 		end: function() { return self; }
 	};
 
@@ -79,5 +80,4 @@
 		opts && $.extend(settings, opts); //inicialize settings
 		return actions; //return actions page-list object
 	};
-
 }(jQuery));

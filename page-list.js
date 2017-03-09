@@ -11,41 +11,6 @@
 	};
 
 	function range(val, min, max) { return Math.min(Math.max(val, min), max); };
-	function drawPageList(elem, pages, page, actions, settings) {
-		//inicialize page and sub-treee DOM
-		while (elem.firstChild) elem.removeChild(elem.firstChild);
-		var ul = elem.appendChild(document.createElement("ul"));
-
-		//calc the iterator index and range limits
-		page = page || settings.currentPage; //set default page number
-		page = settings.currentPage = range(page, 1, pages); //page starts in 1
-		var end = range(page + settings.displayedPages, 0, pages); //last page
-		var start = range(page - settings.displayedPages - 1, 0, end);
-		var group = (settings.displayedPages * 2) + 1;
-		start = (end == pages) ? Math.max(end - group, 0) : start;
-		end = (start == 0) ? Math.min(group, pages) : end;
-
-		//add prev button and first page (if is necesary)
-		append(ul, page - 1, actions, settings.prevText);
-		(start > 0) && append(ul, 1, actions);
-		(start > 1) && append(ul, page - group, actions, settings.rangeText);
-
-		//iterate over displayed pages
-		var i = start * settings.itemsOnPage;
-		while ((i < settings.items) && (start < end)) {
-			append(ul, ++start, actions);
-			i += settings.itemsOnPage;
-		}
-
-		//add next button and last page (if is necesary)
-		(end < (pages - 1)) && append(ul, page + group, actions, settings.rangeText);
-		(end < pages) && append(ul, pages, actions);
-		append(ul, page + 1, actions, settings.nextText);
-
-		ul.setAttribute("class", settings.className);
-		$("li#p" + page, ul).text(page);
-	};
-
 	function append(elem, page, actions, text) {
 		var li = elem.appendChild(document.createElement("li"));
 		var a = $('<a href="#page-' + page + '">' + (text || page) + '</a>');
@@ -66,8 +31,42 @@
 			getPageFromIndex: function(i) { return i ? Math.ceil(i / opts.itemsOnPage) : 1; },
 			numPages: function() { return Math.ceil(opts.items / opts.itemsOnPage); },
 			draw: function(page) {
-				var pages = this.numPages();
-				self.each(function(i, e) { drawPageList(e, pages, page, this, opts); });
+				//get iterator index and range limits
+				var pages = this.numPages(); //number of pages
+				page = page || opts.currentPage; //set default page number
+				page = opts.currentPage = range(page, 1, pages); //page starts in 1
+				var end = range(page + opts.displayedPages, 0, pages); //last page
+				var start = range(page - opts.displayedPages - 1, 0, end);
+				var group = (opts.displayedPages * 2) + 1;
+				start = (end == pages) ? Math.max(end - group, 0) : start;
+				end = (start == 0) ? Math.min(group, pages) : end;
+				var actions = this;
+
+				self.each(function() {
+					//inicialize page and sub-treee DOM
+					while (this.firstChild) this.removeChild(this.firstChild);
+					var ul = this.appendChild(document.createElement("ul"));
+
+					//add prev button and first page (if is necesary)
+					append(ul, page - 1, actions, opts.prevText);
+					(start > 0) && append(ul, 1, actions);
+					(start > 1) && append(ul, page - group, actions, opts.rangeText);
+
+					//iterate over displayed pages
+					var i = start * opts.itemsOnPage;
+					for (var j = start; (i < opts.items) && (j < end); ) {
+						append(ul, ++j, actions);
+						i += opts.itemsOnPage;
+					}
+
+					//add next button and last page (if is necesary)
+					(end < (pages - 1)) && append(ul, page + group, actions, opts.rangeText);
+					(end < pages) && append(ul, pages, actions);
+					append(ul, page + 1, actions, opts.nextText);
+
+					ul.setAttribute("class", opts.className);
+					$("li#p" + page, ul).text(page);
+				});
 				return this;
 			},
 			click: function(page) { opts.onClick && opts.onClick(page); return this.draw(page); },

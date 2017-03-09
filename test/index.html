@@ -38,12 +38,24 @@
 <body>
 
 <div id="paginate"></div>
+<br><br>
+<div id="paginate"></div>
+<br><br>
+<hr>
+<br><br>
+<div id="paginate2"></div>
 
 <script type="text/javascript">
 	var pl = $("div#paginate").pagelist({
 		items: 50,
 		itemsOnPage: 5,
-		onClick: function(p) {alert("page="+p);}
+		onClick: function(p) {alert("page1="+p);}
+	}).draw().click(5);
+
+	$("div#paginate2").pagelist({
+		items: 20,
+		itemsOnPage: 3,
+		onClick: function(p) {alert("page2="+p);}
 	}).draw().click(5);
 
 	setTimeout(function() {

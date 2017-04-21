@@ -19,7 +19,7 @@
 
 	$.fn.pagelist = function(opts) {
 		var self = this; //global reference to jquery list
-		opts = $.extend({}, settings, opts || {});
+		opts = $.extend({}, settings, opts);
 		return { //return actions page-list object
 			currentPage: function() { return opts.currentPage; },
 			setCurrentPage: function(p) { opts.currentPage = p; return this; },
